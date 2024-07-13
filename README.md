@@ -1,3 +1,4 @@
+
 #creates all zookeeper, kafka and application docker
 ```shell
 docker-compose up -d
@@ -20,6 +21,3 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --broker-l
 ```shell
 docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
 ```
-
-
-
