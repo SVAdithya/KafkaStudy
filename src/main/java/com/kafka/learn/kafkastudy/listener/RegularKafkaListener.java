@@ -10,7 +10,7 @@ public class RegularKafkaListener {
 	@KafkaListener(topics = "#{'${kafka.regular.topic}'}", containerFactory = "regularKafkaListenerContainerFactory")
 	public void consume(Message<String> message) {
 
-		System.out.print("Consumed message: " + message.getPayload());
-		System.out.println(" Consumed header: " + message.getHeaders());
+		System.out.print("Regular message: " + message.getPayload());
+		System.out.println(" Regular header: " + message.getHeaders());
 	}
 }
