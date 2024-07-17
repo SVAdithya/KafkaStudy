@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ReactiveKafkaListener implements CommandLineRunner {
 
-	private KafkaReceiver kafkaReceiver;
+	private KafkaReceiver<Integer, String> kafkaReceiver;
 	private HeaderUtil headerUtil;
 
 	private SuccessMessageRepository successMessageRepository;
