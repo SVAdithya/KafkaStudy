@@ -1,5 +1,7 @@
 package com.kafka.learn.kafkastudy.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -20,6 +22,8 @@ import java.util.Collections;
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfiguration {
+	private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerConfiguration.class);
+
 	@Value("${regular.kafka.autostart:false}")
 	private Boolean regularAutoStart;
 
@@ -43,16 +47,13 @@ public class KafkaConsumerConfiguration {
 
 	@Bean("regularKafkaListenerContainerFactory")
 	public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
-			@Qualifier("regularKafkaConsumerFactory") ConsumerFactory consumerFactory
+			@Qualifier("regularKafkaConsumerFactory") ConsumerFactory<String, String> consumerFactory
 	) {
 		ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory);
 		factory.setAutoStartup(regularAutoStart);
 		factory.setConcurrency(5);
-		factory.setRecordFilterStrategy(record -> {
-			// accepts data with false condition, true condition data will be filtered out.
-			return record.value().startsWith("test");
-		});
+		factory.setRecordFilterStrategy(record -> record.value().startsWith("test"));
 		return factory;
 	}
 
