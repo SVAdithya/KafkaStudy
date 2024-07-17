@@ -1,5 +1,7 @@
 package com.kafka.learn.kafkastudy.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -20,6 +22,8 @@ import java.util.Collections;
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfiguration {
+	private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerConfiguration.class);
+
 	@Value("${regular.kafka.autostart:false}")
 	private Boolean regularAutoStart;
 
