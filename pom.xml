@@ -15,6 +15,9 @@
 	<description>Demo project for Spring Boot Reactive Kafka</description>
 	<properties>
 		<java.version>22</java.version>
+		<sonar.token>
+			sqa_2f70116c60ac93aaf18eb362f6091ed705041c7a
+		</sonar.token>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -77,4 +80,13 @@
 			<artifactId>spring-boot-test</artifactId>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>4.0.0.4121</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>
