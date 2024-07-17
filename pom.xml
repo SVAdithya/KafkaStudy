@@ -15,9 +15,8 @@
 	<description>Demo project for Spring Boot Reactive Kafka</description>
 	<properties>
 		<java.version>22</java.version>
-		<sonar.token>
-			sqa_2f70116c60ac93aaf18eb362f6091ed705041c7a
-		</sonar.token>
+		<sonar.organization>kafkastudy</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
