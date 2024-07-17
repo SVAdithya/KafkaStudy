@@ -27,7 +27,7 @@ public class ReactiveKafkaListener implements CommandLineRunner {
 	public void consumeMessages() {
 		Flux<ReceiverRecord<Integer, String>> inboundFlux = kafkaReceiver.receive();
 		inboundFlux.subscribe(r -> {
-			System.out.printf("Reactive message: %s\n", r);
+			System.out.println("Reactive message: "+ r);
 			successMessageRepository.save(new SuccessMessage(
 					UUID.randomUUID().toString(),
 					headerUtil.headersMapToString(r.headers()),

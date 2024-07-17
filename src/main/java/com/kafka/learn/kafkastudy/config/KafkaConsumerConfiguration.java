@@ -49,10 +49,7 @@ public class KafkaConsumerConfiguration {
 		factory.setConsumerFactory(consumerFactory);
 		factory.setAutoStartup(regularAutoStart);
 		factory.setConcurrency(5);
-		factory.setRecordFilterStrategy(record -> {
-			// accepts data with false condition, true condition data will be filtered out.
-			return record.value().startsWith("test");
-		});
+		factory.setRecordFilterStrategy(record -> record.value().startsWith("test"));
 		return factory;
 	}
 
