@@ -25,4 +25,6 @@ jobs:
       - name: Send notification to Slack
         uses: rtCamp/action-slack-notify@v2.1.0
         env:
-          SLACK_WEB
+          SLACK_WEBHOOK: ${{ secrets.SLACK_PUSH_WEBHOOK }}
+          SLACK_USERNAME: 'GitHub Actions'
+          SLACK_MESSAGE: 'A new push has been made to the repository!'
