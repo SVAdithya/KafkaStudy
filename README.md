@@ -21,3 +21,6 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --broker-l
 ```shell
 docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
 ```
+
+
+slack: https://app.slack.com/client/T07D61D72RY/C07D5TQCS1H
