@@ -1,0 +1,28 @@
+name: Notify Slack
+
+on:
+  pull_request:
+    types:
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - opened
+      - edited
+      - closed
+      - reopened
+      - synchronize
+      - ready_for_review
+      - locked
+      - unlocked
+      - review_requested
+      - review_request_removed
+
+jobs:
+  slackNotification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to Slack
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          SLACK_WEB
