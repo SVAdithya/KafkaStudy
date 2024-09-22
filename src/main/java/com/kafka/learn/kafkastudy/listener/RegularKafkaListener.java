@@ -8,10 +8,14 @@ import org.springframework.kafka.annotation.KafkaListener;
 
 @Component
 public class RegularKafkaListener {
-	private static final Logger logger = LoggerFactory.getLogger(RegularKafkaListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegularKafkaListener.class);
 
-	@KafkaListener(topics = "#{'${kafka.regular.topic}'}", containerFactory = "regularKafkaListenerContainerFactory")
-	public void consume(Message<String> message) {
-		logger.info("Regular message: {}, Regular header: {}", message.getPayload(), message.getHeaders() );
-	}
+    @KafkaListener(
+            id = "regularKafkaListener",
+            topics = "#{'${kafka.regular.topic}'}",
+            containerFactory = "regularKafkaListenerContainerFactory"
+    )
+    public void consume(Message<String> message) {
+        logger.info("Regular message: {}, Regular header: {}", message.getPayload(), message.getHeaders());
+    }
 }
