@@ -39,16 +39,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongo-data:/data/db
-      - ./secrets/mongo.pem:/etc/ssl/mongo.pem  # Mount the server certificate
-      - ./secrets/ca.pem:/etc/ssl/ca.pem        # Mount the CA certificate (if using a CA)
-    command:
-      - mongod
-      - --sslMode
-      - requireSSL
-      - --sslPEMKeyFile
-      - /etc/ssl/mongo.pem
-      - --sslCAFile
-      - /etc/ssl/ca.pem
 #sonar - code quality
   sonarqube:
     image: sonarqube
