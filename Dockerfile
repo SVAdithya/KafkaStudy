@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y telnet
 WORKDIR /app
 
 # Copy the jar file
-COPY target/kafkaStudy-0.0.1-SNAPSHOT.jar .
+COPY target/kafkaStudy-0.0.1-SNAPSHOT.jar app.jar
 
 # Command to run the application
-CMD ["java", "-jar", "kafkaStudy-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "app.jar"]
