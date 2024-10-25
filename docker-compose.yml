@@ -9,20 +9,25 @@ services:
   kafka:
     image: wurstmeister/kafka:latest
     ports:
-      - "9092:9092"
-    expose:
-      - "9093"
+      - "9092:9092"  # SSL for external clients
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: SSL://localhost:9092,PLAINTEXT://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SSL:SSL,PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: SSL://0.0.0.0:9092,PLAINTEXT://0.0.0.0:9093
+      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.server.keystore.jks
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.server.keystore.jks
+      KAFKA_SSL_KEYSTORE_PASSWORD: ${KAFKA_SSL_PASSWORD}
+      KAFKA_SSL_TRUSTSTORE_PASSWORD: ${KAFKA_SSL_PASSWORD}
+      KAFKA_SSL_KEY_PASSWORD: ${KAFKA_SSL_PASSWORD}
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
       KAFKA_CREATE_TOPICS: "my-topic:1:1"
     container_name: kafka
     depends_on:
       - zookeeper
     volumes:
+      - ./secrets/client.keystore.jks:/etc/kafka/secrets/kafka.server.keystore.jks
       - /var/run/docker.sock:/var/run/docker.sock
   mongodb:
     image: mongo:latest
