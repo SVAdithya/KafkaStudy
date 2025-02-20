@@ -1,0 +1,20 @@
+resources:
+  - pvc/grafana-storage-persistentvolumeclaim.yaml
+  - pvc/postgres-data-persistentvolumeclaim.yaml
+  - pvc/sonarqube-data-persistentvolumeclaim.yaml
+  - pvc/mongo-data-persistentvolumeclaim.yaml
+  - pvc/prometheus-data-persistentvolumeclaim.yaml
+  - configmap/prometheus-configmap.yaml
+  - service/app-service.yaml
+  - service/grafana-service.yaml
+  - service/kafka-service.yaml
+  - service/mongodb-service.yaml
+  - service/prometheus-service.yaml
+  - service/sonarqube-service.yaml
+  - deploy/grafana-deployment.yaml
+  - deploy/kafka-deployment.yaml
+  - deploy/mongodb-deployment.yaml
+  - deploy/postgres-deployment.yaml
+  - deploy/prometheus-deployment.yaml
+  - deploy/sonarqube-deployment.yaml
+  - deploy/app-deployment.yaml
