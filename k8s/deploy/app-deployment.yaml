@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: app
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: app
+  template:
+    metadata:
+      labels:
+        io.kompose.service: app
+    spec:
+      containers:
+        - args:
+            - java
+            - -jar
+            - /app/app.jar
+          image: app
+          name: kafka-study-app
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
