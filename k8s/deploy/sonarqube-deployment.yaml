@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: sonarqube
+    service: sonarqube
   name: sonarqube
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: sonarqube
+      service: sonarqube
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kompose.service: sonarqube
+        service: sonarqube
     spec:
       containers:
         - env:

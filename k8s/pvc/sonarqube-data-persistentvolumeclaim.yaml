@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    io.kompose.service: sonarqube-data
+    service: sonarqube-data
   name: sonarqube-data
 spec:
   accessModes:
@@ -15,7 +15,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    io.kompose.service: sonarqube-logs
+    service: sonarqube-logs
   name: sonarqube-logs
 spec:
   accessModes:
@@ -28,7 +28,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    io.kompose.service: sonarqube-extensions
+    service: sonarqube-extensions
   name: sonarqube-extensions
 spec:
   accessModes:
