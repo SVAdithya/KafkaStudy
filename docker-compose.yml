@@ -1,5 +1,3 @@
-version: '3.8'  # Specify the version of the Compose file
-
 networks:
   app-network:  # Define the network here
     driver: bridge
