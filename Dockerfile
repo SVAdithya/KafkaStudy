@@ -1,5 +1,5 @@
 # Use the official Java 22 image
-FROM openjdk:22-jdk-slim
+FROM openjdk:25-jdk-slim
 
 # Install netcat-openbsd for debugging
 RUN apt-get update && apt-get install -y netcat-openbsd
