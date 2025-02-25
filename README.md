@@ -1,7 +1,7 @@
 
 #creates all zookeeper, kafka and application docker
 ```shell
-docker-compose up -d
+docker-compose up -d --build # to get new changes loaded
 ```
 #get list of all containers and ID for producer and consumer
 ```shell
