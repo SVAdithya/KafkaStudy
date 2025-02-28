@@ -48,6 +48,7 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --broker-l
 docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic my-topic --from-beginning
 ```
 </details>
+<details><summary>Mongo connection Script</summary>
 
 ```shell
 mongo --host localhost --port 27017 -u root -p *** --authenticationDatabase admin
@@ -55,7 +56,7 @@ show dbs
 show collections
 db.successMessage.find()
 ```
-
+</details>
 prometheus: http://localhost:9090/targets <br/>
 Grafana: http://localhost:3000/ <br/>
 slack: https://app.slack.com/client/T07D61D72RY/C07D5TQCS1H <br/>
