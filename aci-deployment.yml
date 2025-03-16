@@ -104,7 +104,7 @@ properties:
             memoryInGB: 2
 
   osType: Linux
-  restartPolicy: no
+  restartPolicy: never #always/never/onFailure
   volumes:
     - name: mongo-data
       azureFile:
