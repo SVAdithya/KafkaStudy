@@ -1,0 +1,123 @@
+apiVersion: '2019-12-01'
+location: westindia
+name: my-container-group
+properties:
+  containers:
+    - name: kafka
+      properties:
+        image: apache/kafka:latest
+        environmentVariables:
+          - name: KAFKA_NODE_ID
+            value: "1"
+          - name: KAFKA_PROCESS_ROLES
+            value: "broker,controller"
+          - name: KAFKA_LISTENERS
+            value: "PLAINTEXT://kafka:${KAFKA_PORT},CONTROLLER://kafka:${KAFKA_CONTROLLER_PORT}"
+          - name: KAFKA_ADVERTISED_LISTENERS
+            value: "PLAINTEXT://kafka:${KAFKA_PORT}"
+          - name: KAFKA_CONTROLLER_LISTENER_NAMES
+            value: "CONTROLLER"
+          - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+            value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+          - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+            value: "1@kafka:${KAFKA_CONTROLLER_PORT}"
+          - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+            value: "1"
+          - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+            value: "1"
+          - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+            value: "1"
+          - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
+            value: "0"
+          - name: KAFKA_NUM_PARTITIONS
+            value: "3"
+        ports:
+          - protocol: TCP
+            port: ${KAFKA_PORT}
+          - protocol: TCP
+            port: ${KAFKA_CONTROLLER_PORT}
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+          limits:
+            cpu: 2
+            memoryInGB: 2
+
+    - name: mongodb
+      properties:
+        image: mongo:latest
+        environmentVariables:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: "${MONGO_INITDB_ROOT_USERNAME}"
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: "${MONGO_INITDB_ROOT_PASSWORD}"
+        ports:
+          - protocol: TCP
+            port: ${MONGO_PORT}
+        volumeMounts:
+          - name: mongo-data
+            mountPath: "/data/db"
+        resources:
+          requests:
+            cpu: 0.5
+            memoryInGB: 1
+          limits:
+            cpu: 1
+            memoryInGB: 2
+
+    - name: prometheus
+      properties:
+        image: prom/prometheus:latest
+        ports:
+          - protocol: TCP
+            port: ${PROMETHEUS_PORT}
+        volumeMounts:
+          - name: prometheus-data
+            mountPath: "/prometheus"
+        resources:
+          requests:
+            cpu: 0.5
+            memoryInGB: 1
+          limits:
+            cpu: 1
+            memoryInGB: 2
+
+    - name: grafana
+      properties:
+        image: grafana/grafana:latest
+        environmentVariables:
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            value: "${GF_SECURITY_ADMIN_PASSWORD}"
+        ports:
+          - protocol: TCP
+            port: ${GRAFANA_PORT}
+        volumeMounts:
+          - name: grafana-storage
+            mountPath: "/var/lib/grafana"
+        resources:
+          requests:
+            cpu: 0.5
+            memoryInGB: 1
+          limits:
+            cpu: 1
+            memoryInGB: 2
+
+  osType: Linux
+  restartPolicy: no
+  volumes:
+    - name: mongo-data
+      azureFile:
+        shareName: mongo-share
+        storageAccountName: ${AZURE_STORAGE_ACCOUNT}
+        storageAccountKey: ${AZURE_STORAGE_KEY}
+    - name: prometheus-data
+      azureFile:
+        shareName: prometheus-share
+        storageAccountName: ${AZURE_STORAGE_ACCOUNT}
+        storageAccountKey: ${AZURE_STORAGE_KEY}
+    - name: grafana-storage
+      azureFile:
+        shareName: grafana-share
+        storageAccountName: ${AZURE_STORAGE_ACCOUNT}
+        storageAccountKey: ${AZURE_STORAGE_KEY}  #Dont use quotes.
