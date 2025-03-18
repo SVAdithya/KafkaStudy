@@ -1,6 +1,15 @@
 networks:
   app-network:  # Define the network here
-    driver: bridge
+    driver: bridge # bridge, host, overlay, macvlan, none
+x-common-variables: &app
+  spring.kafka.consumer.auto-offset-reset: ${APP_KAFKA_OFFSET}
+  spring.kafka.consumer.bootstrap-servers: ${APP_KAFKA_BOOTSTRAP_SERVERS}
+  spring.kafka.consumer.group-id: ${APP_KAFKA_GROUP_ID}
+  kafka.regular.topic: ${APP_KAFKA_TOPIC}
+  regular.kafka.autostart: false
+  reactive.kafka.autostart: true
+  mask.headers.list: ${APP_FILTERED_HEADERS}
+  spring.data.mongodb.uri: ${APP_MONGO_URL}
 
 services:
   app:
@@ -8,7 +17,8 @@ services:
       context: .       # Build from the current directory, where Dockerfile is located
       dockerfile: Dockerfile  # Specify the Dockerfile
     container_name: kafka-study-app
-
+    environment:
+      <<: *app
     ports:
       - "${APP_PORT}:${APP_PORT}" # Expose the app on localhost:port
     depends_on:
@@ -40,7 +50,6 @@ services:
     networks:
       - app-network
 
-
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -53,6 +62,11 @@ services:
       - mongo-data:/data/db
     networks:
       - app-network
+    healthcheck:
+      test: mongosh --eval "db.runCommand('ping').ok" --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # SonarQube for code quality
   sonarqube:
@@ -89,7 +103,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     ports:
       - "${PROMETHEUS_PORT}:${PROMETHEUS_PORT}"
