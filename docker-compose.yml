@@ -1,7 +1,7 @@
 networks:
   app-network:  # Define the network here
     driver: bridge # bridge, host, overlay, macvlan, none
-x-common-variables: &app
+x-app-variables: &app
   spring.kafka.consumer.auto-offset-reset: ${APP_KAFKA_OFFSET}
   spring.kafka.consumer.bootstrap-servers: ${APP_KAFKA_BOOTSTRAP_SERVERS}
   spring.kafka.consumer.group-id: ${APP_KAFKA_GROUP_ID}
@@ -27,6 +27,12 @@ services:
     command: ["java", "-jar", "/app/app.jar"] # Command to run the app
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${APP_PORT}/actuator/health" ]
+      interval: 10s
+      start_period: 5s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: apache/kafka:latest

@@ -1,10 +1,7 @@
 # Use the official Java 22 image
 FROM openjdk:25-jdk-slim
 
-# Install netcat-openbsd for debugging
-RUN apt-get update && apt-get install -y netcat-openbsd
-# Install telnet for debugging
-RUN apt-get update && apt-get install -y telnet
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /app
