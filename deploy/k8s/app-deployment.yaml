@@ -1,4 +1,25 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  kafka.regular.topic: my-topic
+  mask.headers.list: pwd,pass
+  reactive.kafka.autostart: "true"
+  regular.kafka.autostart: "false"
+  spring.kafka.consumer.auto-offset-reset: earliest
+  spring.kafka.consumer.bootstrap-servers: kafka-service:9092
+  spring.kafka.consumer.group-id: demo-3
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+stringData:
+  spring.data.mongodb.uri: "mongodb://root:example@mongodb-service:27017/testMongoDb?authSource=admin"
+---
+apiVersion: v1
 kind: Service
 metadata:
   annotations:
@@ -18,60 +39,26 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -o k8s/
-    kompose.version: 1.35.0 (HEAD)
-  labels:
-    io.kompose.service: app
-  name: app
+  name: my-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: app
+      app: my-app
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -o k8s/
-        kompose.version: 1.35.0 (HEAD)
       labels:
-        io.kompose.service: app
+        app: my-app
     spec:
       containers:
-        - args:
-            - java
-            - -jar
-            - /app/app.jar
-          env:
-            - name: kafka.regular.topic
-              value: my-topic
-            - name: mask.headers.list
-              value: pwd,pass
-            - name: reactive.kafka.autostart
-              value: "true"
-            - name: regular.kafka.autostart
-              value: "false"
-            - name: spring.data.mongodb.uri
-              value: mongodb://root:example@mongodb:27017/testMongoDb?authSource=admin
-            - name: spring.kafka.consumer.auto-offset-reset
-              value: earliest
-            - name: spring.kafka.consumer.bootstrap-servers
-              value: kafka:9092
-            - name: spring.kafka.consumer.group-id
-              value: demo-3
-          image: app
-          livenessProbe:
-            exec:
-              command:
-                - curl
-                - -f
-                - http://localhost:8080/actuator/health
-            failureThreshold: 5
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-          name: kafka-study-app
+        - name: app
+          image: docker.io/library/app:1.2
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
               protocol: TCP
-      restartPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: my-config
+            - secretRef:
+                name: my-secret

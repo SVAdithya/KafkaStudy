@@ -58,6 +58,20 @@ kubectl get pods -l io.kompose.service=kafka
 kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic
 #Consume msg from topic
 kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+
+#App
+docker build -t app:latest ./../.. #dockerFile location
+minikube image load app:1.1 # load image to minikube
+minikube image ls --format table # list all images - build/load/ls/pull/push/rm/save/tag
+kubectl get all # get all resources
+
+kubectl apply -f app-deployment.yaml # apply deployment
+kubectl exec -it my-app-85bbdcc57b-lc44w -- /bin/sh # load shell script in pod
+
+nslookup kafka-service # get ip address of any-service
+
+kubectl rollout restart deployment my-app # restart deployment(all pods), to apply new changes
+
 ```
 
 </details>
