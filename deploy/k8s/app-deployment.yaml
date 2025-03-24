@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o k8s/
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: app
+  name: app
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    io.kompose.service: app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o k8s/
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: app
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: app
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o k8s/
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: app
+    spec:
+      containers:
+        - args:
+            - java
+            - -jar
+            - /app/app.jar
+          env:
+            - name: kafka.regular.topic
+              value: my-topic
+            - name: mask.headers.list
+              value: pwd,pass
+            - name: reactive.kafka.autostart
+              value: "true"
+            - name: regular.kafka.autostart
+              value: "false"
+            - name: spring.data.mongodb.uri
+              value: mongodb://root:example@mongodb:27017/testMongoDb?authSource=admin
+            - name: spring.kafka.consumer.auto-offset-reset
+              value: earliest
+            - name: spring.kafka.consumer.bootstrap-servers
+              value: kafka:9092
+            - name: spring.kafka.consumer.group-id
+              value: demo-3
+          image: app
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -f
+                - http://localhost:8080/actuator/health
+            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: kafka-study-app
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
