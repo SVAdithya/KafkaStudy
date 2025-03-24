@@ -79,13 +79,6 @@ spec:
             - name: MONGO_INITDB_ROOT_USERNAME
               value: root
           image: mongo:latest
-          livenessProbe:
-            exec:
-              command:
-                - mongosh --eval "db.runCommand('ping').ok" --quiet
-            failureThreshold: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
           name: mongodb
           resources:
             requests:
