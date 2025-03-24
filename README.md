@@ -16,7 +16,7 @@ podman-compose up
 ```
 #produce to topic
 ```shell
-podman exec -it 87932ae7f6a5 /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic my-topic
+podman exec -it 87932ae7f6a5 /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server kafka:9092 --topic my-topic
 ```
 
 #Consume topic
@@ -41,7 +41,7 @@ docker-compose up
 ```
 #produce to topic
 ```shell
-docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic my-topic
+docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server kafka:9092 --topic my-topic
 ```
 
 #Consume topic
