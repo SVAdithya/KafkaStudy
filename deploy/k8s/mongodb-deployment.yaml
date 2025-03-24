@@ -1,15 +1,24 @@
 apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-secret
+type: Opaque
+data:
+  username: cm9vdA==  # base64-encoded "root"
+  password: ZXhhbXBsZQ==  # base64-encoded "example"
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    io.kompose.service: mongo-data
-  name: mongo-data
+    io.kompose.service: mongo-pvc
+  name: mongo-pvc
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 1Gi  # Adjust based on your needs
 ---
 apiVersion: v1
 kind: Service
@@ -19,7 +28,7 @@ metadata:
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: mongodb
-  name: mongodb
+  name: mongodb-service
 spec:
   ports:
     - name: "27017"
@@ -36,7 +45,7 @@ metadata:
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: mongodb
-  name: mongodb
+  name: mongodb-deployment
 spec:
   replicas: 1
   selector:
@@ -78,14 +87,19 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
           name: mongodb
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "500m"
           ports:
             - containerPort: 27017
-              protocol: TCP
           volumeMounts:
-            - mountPath: /data/db
-              name: mongo-data
-      restartPolicy: Always
+            - name: mongo-storage
+              mountPath: /data/db
       volumes:
-        - name: mongo-data
+        - name: mongo-storage
           persistentVolumeClaim:
-            claimName: mongo-data
+            claimName: mongo-pvc
