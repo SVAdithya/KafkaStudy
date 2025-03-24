@@ -58,6 +58,11 @@ spec:
           command: ["sh", "-c", "sysctl -w net.ipv4.tcp_fastopen=3"]
           securityContext:
             privileged: true  # Required to modify kernel settings
+        - name: init-sysctl
+          image: busybox
+          command: [ "sh", "-c", "sysctl -w vm.max_map_count=1677720", "sysctl -w vm.swappiness=1" ]
+          securityContext:
+            privileged: true  # Required to modify sysctl settings
       containers:
         - env:
             - name: MONGO_INITDB_ROOT_PASSWORD
