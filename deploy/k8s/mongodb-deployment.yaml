@@ -52,6 +52,12 @@ spec:
       labels:
         io.kompose.service: mongodb
     spec:
+      initContainers:
+        - name: init-tcp-fastopen
+          image: busybox
+          command: ["sh", "-c", "sysctl -w net.ipv4.tcp_fastopen=3"]
+          securityContext:
+            privileged: true  # Required to modify kernel settings
       containers:
         - env:
             - name: MONGO_INITDB_ROOT_PASSWORD
