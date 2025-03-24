@@ -3,11 +3,11 @@ kind: ConfigMap
 metadata:
   name: kafka-config
 data:
-  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
   KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-  KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+  KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
   KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
-  KAFKA_LISTENERS: "PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093"
+  KAFKA_LISTENERS: "PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093"
   KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
   KAFKA_NODE_ID: "1"
   KAFKA_NUM_PARTITIONS: "3"
@@ -16,7 +16,6 @@ data:
   KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
   KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -25,8 +24,9 @@ metadata:
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: kafka
-  name: kafka
+  name: kafka-service
 spec:
+  type: NodePort
   ports:
     - name: "9092"
       port: 9092
@@ -45,7 +45,7 @@ metadata:
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: kafka
-  name: kafka
+  name: kafka-deployment
 spec:
   replicas: 1
   selector:
@@ -60,36 +60,14 @@ spec:
         io.kompose.service: kafka
     spec:
       containers:
-        - env:
-            - name: KAFKA_ADVERTISED_LISTENERS
-              value: PLAINTEXT://kafka:9092
-            - name: KAFKA_CONTROLLER_LISTENER_NAMES
-              value: CONTROLLER
-            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
-              value: 1@kafka:9093
-            - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
-              value: "0"
-            - name: KAFKA_LISTENERS
-              value: PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093
-            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-              value: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-            - name: KAFKA_NODE_ID
-              value: "1"
-            - name: KAFKA_NUM_PARTITIONS
-              value: "3"
-            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: "1"
-            - name: KAFKA_PROCESS_ROLES
-              value: broker,controller
-            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
-              value: "1"
-            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-              value: "1"
-          image: apache/kafka:latest
+        - image: apache/kafka:latest
           name: kafka
           ports:
             - containerPort: 9092
               protocol: TCP
             - containerPort: 9093
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: kafka-config
       restartPolicy: Always

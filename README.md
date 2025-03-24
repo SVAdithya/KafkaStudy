@@ -49,6 +49,18 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --bootstra
 docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic my-topic --from-beginning
 ```
 </details>
+<details><summary>Kubernetes Script</summary>
+
+```shell
+
+kubectl get pods -l io.kompose.service=kafka
+#Publish msg to topic
+kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic
+#Consume msg from topic
+kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+```
+
+</details>
 <details><summary>Mongo connection Script</summary>
 
 ```shell
