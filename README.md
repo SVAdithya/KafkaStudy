@@ -53,7 +53,7 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstra
 
 ```shell
 
-kubectl get pods -l io.kompose.service=kafka
+kubectl get pods # get all pods
 #Publish msg to topic
 kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic
 #Consume msg from topic
@@ -66,12 +66,17 @@ minikube image ls --format table # list all images - build/load/ls/pull/push/rm/
 kubectl get all # get all resources
 
 kubectl apply -f app-deployment.yaml # apply deployment
-kubectl exec -it my-app-85bbdcc57b-lc44w -- /bin/sh # load shell script in pod
+kubectl exec -it my-app-8458f77f95-wq548 -- /bin/sh # load shell script in pod
 
 nslookup kafka-service # get ip address of any-service
-
 kubectl rollout restart deployment my-app # restart deployment(all pods), to apply new changes
 
+kubectl get pods / deployment / svc (service) / rc (replicationcontroller) / rs (replicaset) / ns (namespace) / cm (configmap) 
+/ pv (persistentvolume) / pvc (persistentvolumeclaim) / sc (storageclass) / poddisruptionbudget / hpa (horizontalpodautoscaler) 
+/ ingress / networkpolicy / limitrange / podsecuritypolicy / secret / serviceaccount / role / rolebinding / clusterrole 
+/ clusterrolebinding / customresourcedefinition / daemonset / statefulset / job / cronjob / resourcequota / podpreset 
+/ mutatingwebhookconfiguration / validatingwebhookconfiguration / priorityclass / podsecuritypolicy / certificate / certificateSigningRequest 
+/ lease / componentstatus / node / endpoints / event / limitrange / poddisruptionbudget 
 ```
 
 </details>

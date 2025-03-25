@@ -3,11 +3,11 @@ kind: ConfigMap
 metadata:
   name: kafka-config
 data:
-  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
+  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-service.default.svc.cluster.local:9092"
   KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
   KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
   KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
-  KAFKA_LISTENERS: "PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093"
+  KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://localhost:9093"
   KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
   KAFKA_NODE_ID: "1"
   KAFKA_NUM_PARTITIONS: "3"
@@ -15,18 +15,13 @@ data:
   KAFKA_PROCESS_ROLES: "broker,controller"
   KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
   KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -o k8s/
-    kompose.version: 1.35.0 (HEAD)
-  labels:
-    io.kompose.service: kafka
   name: kafka-service
 spec:
-  type: NodePort
   ports:
     - name: "9092"
       port: 9092
@@ -34,30 +29,20 @@ spec:
     - name: "9093"
       port: 9093
       targetPort: 9093
-  selector:
-    io.kompose.service: kafka
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -o k8s/
-    kompose.version: 1.35.0 (HEAD)
-  labels:
-    io.kompose.service: kafka
   name: kafka-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: kafka
+      app: kafka #should match with template.metadata.labels
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -o k8s/
-        kompose.version: 1.35.0 (HEAD)
       labels:
-        io.kompose.service: kafka
+        app: kafka  # Should match with selector.matchLabels
     spec:
       containers:
         - image: apache/kafka:latest
