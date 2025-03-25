@@ -49,15 +49,15 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-producer.sh --bootstra
 docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic my-topic --from-beginning
 ```
 </details>
-<details><summary>Kubernetes Script</summary>
+<details><summary>☸️ Kubernetes Script</summary>
 
 ```shell
 
 kubectl get pods # get all pods
 #Publish msg to topic
-kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic
+kubectl exec -it kafka-sfs-0 -- /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic
 #Consume msg from topic
-kubectl exec -it kafka-deployment-65c956686d-jrmnr -- /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+kubectl exec -it kafka-sfs-0 -- /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
 
 #App
 docker build -t app:latest ./../.. #dockerFile location
@@ -77,10 +77,15 @@ kubectl get pods / deployment / svc (service) / rc (replicationcontroller) / rs 
 / clusterrolebinding / customresourcedefinition / daemonset / statefulset / job / cronjob / resourcequota / podpreset 
 / mutatingwebhookconfiguration / validatingwebhookconfiguration / priorityclass / podsecuritypolicy / certificate / certificateSigningRequest 
 / lease / componentstatus / node / endpoints / event / limitrange / poddisruptionbudget 
+
+
+ kubectl exec -it mongodb-sfs-0 -- /bin/sh
+ mongosh --host localhost --port 27017 -u root -p example --authenticationDatabase admin
+
 ```
 
 </details>
-<details><summary>Mongo connection Script</summary>
+<details><summary>🍃 Mongo connection Script</summary>
 
 ```shell
 mongo --host localhost --port 27017 -u root -p *** --authenticationDatabase admin

@@ -16,29 +16,31 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi  # Adjust based on your needs
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb-service
 spec:
+  clusterIP: None  # Required for StatefulSet
+  selector:
+    app: mongodb
   ports:
-    - name: "27017"
+    - name: mongodb
       port: 27017
       targetPort: 27017
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: mongodb-deployment
+  name: mongodb-sfs
 spec:
+  serviceName: mongodb-service  # Required for stable pod DNS
   replicas: 1
   selector:
     matchLabels:
       app: mongodb  # Ensure the selector matches the pod labels
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -60,9 +62,15 @@ spec:
           image: mongo:latest
           env:
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: example
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: password
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: username
           resources:
             requests:
               memory: "500Mi"
@@ -81,7 +89,12 @@ spec:
             failureThreshold: 5
             periodSeconds: 10
             timeoutSeconds: 5
-      volumes:
-        - name: mongo-storage
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

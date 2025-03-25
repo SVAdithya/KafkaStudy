@@ -22,19 +22,24 @@ kind: Service
 metadata:
   name: kafka-service
 spec:
+  clusterIP: None  # Headless service for StatefulSet
   ports:
-    - name: "9092"
+    - name: kafka-9092
       port: 9092
       targetPort: 9092
-    - name: "9093"
+    - name: kafka-9093
       port: 9093
       targetPort: 9093
+  selector:
+    app: kafka
+
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: kafka-deployment
+  name: kafka-sfs
 spec:
+  serviceName: kafka-service  # Ensures stable hostnames
   replicas: 1
   selector:
     matchLabels:
@@ -45,8 +50,8 @@ spec:
         app: kafka  # Should match with selector.matchLabels
     spec:
       containers:
-        - image: apache/kafka:latest
-          name: kafka
+        - name: kafka
+          image: apache/kafka:latest
           ports:
             - containerPort: 9092
               protocol: TCP
@@ -55,4 +60,19 @@ spec:
           envFrom:
             - configMapRef:
                 name: kafka-config
-      restartPolicy: Always
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
+      volumes:
+        - name: kafka-data
+          persistentVolumeClaim:
+            claimName: kafka-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi  # Adjust as needed
