@@ -92,6 +92,12 @@ spec:
           volumeMounts:
             - name: mongo-storage
               mountPath: /data/db
+          livenessProbe:
+            exec:
+              command: ["mongosh", "--eval", "db.runCommand('ping').ok", "--quiet"]
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
       volumes:
         - name: mongo-storage
           persistentVolumeClaim:
