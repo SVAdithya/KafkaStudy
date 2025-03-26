@@ -99,9 +99,5 @@ services:
 
 volumes:
   mongo-data:
-  sonarqube_data:
-  sonarqube_logs:
-  sonarqube_extensions:
-  postgres_data:
   grafana-storage:
   prometheus_data:
