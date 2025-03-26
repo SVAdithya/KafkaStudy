@@ -81,6 +81,8 @@ kubectl get pods / deployment / svc (service) / rc (replicationcontroller) / rs 
 
  kubectl exec -it mongodb-sfs-0 -- /bin/sh
  mongosh --host localhost --port 27017 -u root -p example --authenticationDatabase admin
+ 
+ kubectl port-forward svc/grafana 3000:3000
 
 ```
 
@@ -95,5 +97,5 @@ db.successMessage.find()
 ```
 </details>
 prometheus: http://localhost:9090/targets <br/>
-Grafana: http://localhost:3000/ <br/>
+Grafana(4701): http://localhost:3000/ <br/>
 slack: https://app.slack.com/client/T07D61D72RY/C07D5TQCS1H <br/>
