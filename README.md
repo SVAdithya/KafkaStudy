@@ -52,6 +52,7 @@ docker exec -it 89d4f551353f /opt/kafka/bin/kafka-console-consumer.sh --bootstra
 <details><summary>☸️ Kubernetes Script</summary>
 
 ```shell
+export $(grep -v '^#' .env | xargs) && kompose convert -o k8s/ # convert docker-compose to k8s
 
 kubectl get pods # get all pods
 #Publish msg to topic
@@ -83,7 +84,8 @@ kubectl get pods / deployment / svc (service) / rc (replicationcontroller) / rs 
  mongosh --host localhost --port 27017 -u root -p example --authenticationDatabase admin
  
  kubectl port-forward svc/grafana 3000:3000
-
+ 
+kubectl apply -k .
 ```
 
 </details>
