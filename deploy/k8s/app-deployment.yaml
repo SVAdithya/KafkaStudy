@@ -24,6 +24,8 @@ kind: Service
 metadata:
   name: app
 spec:
+  selector:
+    app: my-app
   ports:
     - name: "8080"
       port: 8080
