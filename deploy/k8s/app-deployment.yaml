@@ -39,11 +39,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: KafkaStudy #should match with template.metadata.labels
+      app: my-app  #should match with template.metadata.labels
   template:
     metadata:
       labels:
-        app: KafkaStudy  # Should match with selector.matchLabels
+        app: my-app   # Should match with selector.matchLabels
     spec:
       containers:
         - name: app
