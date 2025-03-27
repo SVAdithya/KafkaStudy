@@ -48,7 +48,9 @@ spec:
       containers:
         - name: app
           #image: docker.io/library/app:1.2 Local image
-          image: adithyasv/my-app:1.3 # Docker Hub image
+          #image: adithyasv/my-app:1.3 # Docker Hub image
+          image: adittest1111.azurecr.io/app:1.4 # Private ACR image
+          imagePullPolicy: Always #Always / IfNotPresent / Never
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -57,3 +59,5 @@ spec:
                 name: my-config
             - secretRef:
                 name: my-secret
+      imagePullSecrets:
+        - name: acr-secret # ACR secret name, used only for private ACR images
