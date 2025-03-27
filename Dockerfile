@@ -3,6 +3,9 @@ FROM openjdk:25-jdk-slim
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
+# Install nslookup (dnsutils)
+RUN apt-get update && apt-get install -y dnsutils && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory
 WORKDIR /app
 

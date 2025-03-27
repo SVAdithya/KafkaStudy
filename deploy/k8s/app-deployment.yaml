@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  kafka.regular.topic: my-topic
+  mask.headers.list: pwd,pass
+  reactive.kafka.autostart: "true"
+  regular.kafka.autostart: "false"
+  spring.kafka.consumer.auto-offset-reset: earliest
+  spring.kafka.consumer.bootstrap-servers: kafka-service.default.svc.cluster.local:9092
+  spring.kafka.consumer.group-id: demo-3
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+stringData:
+  spring.data.mongodb.uri: "mongodb://root:example@mongodb-service:27017/testMongoDb?authSource=admin"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  selector:
+    app: my-app
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app  #should match with template.metadata.labels
+  template:
+    metadata:
+      labels:
+        app: my-app   # Should match with selector.matchLabels
+    spec:
+      containers:
+        - name: app
+          image: docker.io/library/app:1.2
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: my-config
+            - secretRef:
+                name: my-secret
