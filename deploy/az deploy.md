@@ -37,7 +37,7 @@ kubectl create secret docker-registry acr-secret \
 --docker-password=******** \
 --namespace=default
 ```
-# Deletetion of ACR
+# Deletion of ACR
 ```shell
 #Delete the ACR image
 az acr repository delete --name adittest1111 --repository app --yes
