@@ -1,9 +1,9 @@
 package com.kafka.learn.kafkastudy.controller.model;
 
 public enum AppService {
-    MONGO,
+    ORDER,
+    PAYMENT,
     REGULAR_KAFKA,
-    REACTIVE_KAFKA,
-    APP,
-    OTHERS
+    REACTIVE_KAFKA, // Even if commented out in AppHealthIndicator, keep for completeness
+    MONGO
 }
