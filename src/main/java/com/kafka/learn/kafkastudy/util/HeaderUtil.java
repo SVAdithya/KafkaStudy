@@ -21,9 +21,13 @@ public class HeaderUtil {
 	public String headersMapToString(Headers headers) {
 		ObjectMapper oj = new ObjectMapper();
 		Map<String, String> map = new HashMap<>();
-		headers.forEach(header ->
-			map.put(header.key(), (!maskHeaders.contains(header.key())) ? new String(header.value(), StandardCharsets.UTF_8) : "")
-		);
+		headers.forEach(header -> {
+			String headerValue = null;
+			if (header.value() != null) {
+				headerValue = new String(header.value(), StandardCharsets.UTF_8);
+			}
+			map.put(header.key(), (!maskHeaders.contains(header.key())) ? headerValue : "");
+		});
 		try {
 			return oj.writeValueAsString(map);
 		} catch (JsonProcessingException e) {

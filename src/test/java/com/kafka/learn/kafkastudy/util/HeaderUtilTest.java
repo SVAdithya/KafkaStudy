@@ -80,11 +80,29 @@ class HeaderUtilTest {
     @Test
     void testHeadersMapToString_nullHeaderValue() {
         Headers headers = new RecordHeaders();
-        headers.add(new RecordHeader("null_value_header", null));
-        headers.add(new RecordHeader("sensitive_header", "secret_value".getBytes(StandardCharsets.UTF_8)));
+        headers.add(new RecordHeader("null_value_header", null)); // Not masked, value is null
+        headers.add(new RecordHeader("sensitive_header", null));  // Masked, value is null -> should be ""
+
+        // No need to add another_sensitive_header if it's not used, or ensure it's added to mask list if used.
+        // The original test only had "sensitive_header" as masked.
+
         String result = headerUtil.headersMapToString(headers);
-        assertTrue(result.contains("\"null_value_header\":null") || result.contains("\"null_value_header\":\"\"")); // Depending on Kafka or Jackson behavior with null byte[]
-        assertTrue(result.contains("\"sensitive_header\":\"\""));
+
+        // Expected: {"null_value_header":null,"sensitive_header":""} or {"sensitive_header":"","null_value_header":null}
+        assertTrue(result.contains("\"null_value_header\":null"), "JSON should contain '\"null_value_header\":null'");
+        assertTrue(result.contains("\"sensitive_header\":\"\""), "JSON should contain '\"sensitive_header\":\"\"'");
+
+        // A more robust check for structure:
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, String> resultMap = mapper.readValue(result, java.util.Map.class);
+            assertNull(resultMap.get("null_value_header"), "Value of 'null_value_header' should be null");
+            assertEquals("", resultMap.get("sensitive_header"), "Value of 'sensitive_header' should be an empty string");
+            assertEquals(2, resultMap.size(), "Map should contain exactly two entries");
+        } catch (JsonProcessingException e) {
+            fail("Failed to parse JSON result: " + result, e);
+        }
     }
 
 
