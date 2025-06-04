@@ -33,3 +33,6 @@ build/
 .vscode/
 .env
 .DS_Store
+deploy/k8s/.DS_Store
+deploy/.DS_Store
+.DS_Store
